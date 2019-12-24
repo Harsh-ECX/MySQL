@@ -177,3 +177,7 @@ CLUSTERPRO環境下でMySQLを設定する場合、非クラスタ環境の場�
               |監視(固有) > ライブラリパス|/usr/lib64/mysql/libmysqlclient.so.21|
               
       - 設定の反映を実施
+      
+
+6. 動作確認
+    - CLUSTERPRO の フェイルオーバグループが起動している箇所で database にアクセスできることを確認
