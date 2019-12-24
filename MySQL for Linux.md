@@ -132,8 +132,9 @@ CLUSTERPRO環境下でMySQLを設定する場合、非クラスタ環境の場�
               |---|---|
               |1|Yamada|
               |2|Suzuki|
-     - MySQL サービスの停止
-        - systemctl stop mysqld
+              
+    - MySQL サービスの停止
+         - systemctl stop mysqld
 
 4. Server2(待機系)でのMySQLの設定  
     フェイルオーバグループを待機系サーバに移動します。待機系サーバにてMySQLの設定を行います。  
@@ -155,9 +156,10 @@ CLUSTERPRO環境下でMySQLを設定する場合、非クラスタ環境の場�
               |id|name|
               |---|---|
               |1|Yamada|
-              |2|Suzuki|       
-          - MySQL サービスの停止
-            - systemctl stop mysqld
+              |2|Suzuki|
+              
+    - MySQL サービスの停止
+         - systemctl stop mysqld
             
  5. CLUSTERPROに設定を追加
       - EXECリソースの追加  
