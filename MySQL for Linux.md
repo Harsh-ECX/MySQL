@@ -164,9 +164,9 @@ CLUSTERPRO環境下でMySQLを設定する場合、非クラスタ環境の場�
  5. CLUSTERPROに設定を追加
       - EXECリソースの追加  
         CLUSTERPRO WebUI を使用して、MySQLの起動・停止用スクリプトを実行するEXECリソースを追加します。  
-          - start.bat / stop.bat を 修正
-            -  start.bat の場合 -> "$CLP_DISK" = "SUCCESS" の直後に systemctl start mysqld と追記
-            -  stop.bat の場合 -> "$CLP_DISK" = "SUCCESS" の直後に systemctl stop mysqld と追記
+          - start.sh / stop.sh を 修正
+            -  start.sh の場合 -> "$CLP_DISK" = "SUCCESS" の直後に systemctl start mysqld と追記
+            -  stop.sh の場合 -> "$CLP_DISK" = "SUCCESS" の直後に systemctl stop mysqld と追記
       - MySQL モニタリソースの追加
           - 以下のパラメータを修正
 
