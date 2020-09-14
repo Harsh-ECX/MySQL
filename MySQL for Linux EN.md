@@ -161,9 +161,9 @@ procedure
  5. Configure the EXPRESSCLUSTER
       - Add the exec resource and configure.  
         In Config mode of the Cluster WebUI, Add the exec resource to control MySQL.  
-          - Configure the start.bat and stop.bat
-            -  In the case of start.bat -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl start mysqld"
-            -  In the case of stop.bat  -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl stop mysqld"
+          - Configure the start.sh and stop.sh
+            -  In the case of start.sh -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl start mysqld"
+            -  In the case of stop.sh  -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl stop mysqld"
       - Add the MySQL monitor resource
           - Configure the folloing parameters
 
