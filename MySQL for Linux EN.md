@@ -26,6 +26,7 @@ Achieving MySQL high availability By using EXPRESSCLUSTER X.
   - exec resource
   - floting IP resource
   - mirror disk resource
+  
 - Monitor rerources
   - floting IP resource
   - mirror disk connect monitor resource
@@ -42,6 +43,7 @@ Please note that the following points are different if you set MySQL to EXPRESSC
 Procedure
 ---
 1. EXPRESSCLUSTER setup  
+
     - We assume the following 2node cluster and explain it.
 
     ### cluster information
@@ -69,6 +71,7 @@ Procedure
      After you add failver group and execute apply the configuration file, you start failover group by server1.  
      
 2. Install MySQL on both servers
+
     - Install rpm files in the following order 
      1. mysql-community-common-8.0.17-1.el7.x86_64.rpm
      2. mysql-community-libs-8.0.17-1.el7.x86_64.rpm
@@ -78,19 +81,25 @@ Procedure
     OR  
        (Run the below mentioned command to install mysql using yum )
 
-     5.  sudo yum install mysql-server  
+     1.  sudo yum install mysql-server  
 
            Note :- Please visit [this site](https://www.server-world.info/query?os=CentOS_8&p=mysql8&f=1) if any problems arise with the installation and setup of MYSQL
 
     - Configure the root account
         - mysql_secure_installation 
-3. MySQL Setup 
+        
+3. MySQL Configuration for Mirror disk (Node1)
 
-    - Run the systemctl command in the following order to set MySQL service not to start.
+    - Create the database directory.
+        - mkdir -p /mnt/md1/mysql
+
+    - Coping MySQL data from default location to Mirror Disk.
+    
+      - systemctl status mysqld
       - systemctl stop mysqld
       - sudo rsync -av /var/lib/mysql /mnt/md1/mysql
-     
-    - Pleaes perform the below steps on both servers.
+      
+4. Perform the below steps on both the Nodes.
 
     - Initialize the MySQL 8.0(internal version:8.0.17)
         - Configure the MySQL Configuration file (/etc/my.cnf).
@@ -118,10 +127,8 @@ Procedure
           > socket=/mnt/md1/mysql/mysql.sock 
             - No other configuring required.        
      
-3. MySQL Setup (Node1)
-    - Create the database directory.
-        - mkdir -p /mnt/md1/mysql
-    
+5. MySQL Setup (Node1)
+        
     - Run the MySQL service.
         - systemctl start mysqld
 
@@ -163,7 +170,8 @@ Procedure
     - Stop MySQL service
              - systemctl stop mysqld
 
-4.   MySQL Setup (Node2)
+6. MySQL Setup (Node2)
+
     You have to move failover group on the Node2. Configure MySQL on the Node2.
     - Start MySQL service.
         - systemctl start mysqld
@@ -187,12 +195,15 @@ Procedure
     - Stop MySQL service.
          - systemctl stop mysqld
             
- 5. Configure the EXPRESSCLUSTER
-      - Add the exec resource and configure.  
+ 7. Configure the EXPRESSCLUSTER
+ 
+      - Add the exec resource and configure. 
+       
         In Config mode of the Cluster WebUI, Add the exec resource to control MySQL.  
           - Configure the start.sh and stop.sh
             -  In the case of start.sh -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl start mysqld"
             -  In the case of stop.sh  -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl stop mysqld"
+           
       - Add the MySQL monitor resource
           - Configure the folloing parameters
 
@@ -207,5 +218,6 @@ Procedure
       - In Config mode of the Cluster WebUI, execute Apply the Configuration File.
       
 
-6. Verification
+8. Verification
+
     - Confirm that we can access the database where it failover group is running.
