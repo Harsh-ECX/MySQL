@@ -1,4 +1,4 @@
-EXPRESSCLUSTER X for Linux MySQL HowTo
+MYSQL with EXPRESSCLUSTER X on Linux
 ===
 
 About this guide
@@ -7,15 +7,17 @@ This guide describes how to setup MySQL with EXPRESSCLUSTER X.
 For the detailed information of EXPRESSCLUSTER X, please refer to [this site](https://www.nec.com/en/global/prod/expresscluster/index.html) .
 
 
-configurations
+Configuration
 ---
-In this guide, create 2 nodes (Node1 Node2 as below) mirror disk type cluster.
-We realize MySQL high availability By using EXPRESSCLUSTER X. 
+In this setup, create 2 nodes (Node1 and Node2 as below) mirror disk type cluster.
+Achieving MySQL high availability By using EXPRESSCLUSTER X. 
 
 ### Software versions
-- MySQL 8.0(internal version:8.0.17)
-
-- CLUSTERPRO X 4.1 for Linux (internal version：4.1.2-1)
+- MySQL 8.0(internal version:8.0.17) 
+             
+  OR
+- MySQL 8.0(internal version:8.0.21)
+- CLUSTERPRO X 4.1/2/3 for Linux 
 - CLUSTERPRO X Replicator for Linux
 - CLUSTERPRO X Database Agent for Linux
 
@@ -24,6 +26,7 @@ We realize MySQL high availability By using EXPRESSCLUSTER X.
   - exec resource
   - floting IP resource
   - mirror disk resource
+  
 - Monitor rerources
   - floting IP resource
   - mirror disk connect monitor resource
@@ -37,9 +40,10 @@ Please note that the following points are different if you set MySQL to EXPRESSC
   You have to set only active server if you create database and database cluster.
 
 
-procedure
+Procedure
 ---
 1. EXPRESSCLUSTER setup  
+
     - We assume the following 2node cluster and explain it.
 
     ### cluster information
@@ -63,38 +67,71 @@ procedure
       - Floating ip resource  
       - Mirror disk resource
     
-     If you want to know how to add resource, please refer to "EXPRESSCLUSTER X 4.1 for Linux Installation and Configuration Guide". 
+     If want to know how to add the resource, please refer to "EXPRESSCLUSTER X 4.1/2/3 for Linux Installation and Configuration Guide". 
      After you add failver group and execute apply the configuration file, you start failover group by server1.  
      
 2. Install MySQL on both servers
+
     - Install rpm files in the following order 
      1. mysql-community-common-8.0.17-1.el7.x86_64.rpm
      2. mysql-community-libs-8.0.17-1.el7.x86_64.rpm
      3. mysql-community-client-8.0.17-1.el7.x86_64.rpm
      4. mysql-community-server-8.0.17-1.el7.x86_64.rpm
+            
+    OR  
+       (Run the below mentioned command to install mysql using yum )
 
-3. MySQL Setup (common)
-    - Run the systemctl command in the following order to set MySQL service not to start.
-      - systemctl disable mysqld
+     1.  sudo yum install mysql-server  
+
+           Note :- Please visit [this site](https://www.server-world.info/query?os=CentOS_8&p=mysql8&f=1) if any problems arise with the installation and setup of MYSQL
+
+    - Configure the root account
+        - mysql_secure_installation 
+        
+3. MySQL Configuration for Mirror disk (Node1)
+
+    - Create the database directory.
+        - mkdir -p /mnt/md1/mysql
+
+    - Coping MySQL data from default location to Mirror Disk.
     
-    - Initialize the MySQL
-        - Configure the MySQL Configuration file.
+      - systemctl status mysqld
+      - systemctl stop mysqld
+      - systemctl disable mysqld
+      - sudo rsync -av /var/lib/mysql /mnt/md1/mysql
+      
+4. Perform the below steps on both the Nodes.
+
+    - Initialize the MySQL 8.0(internal version:8.0.17)
+        - Configure the MySQL Configuration file (/etc/my.cnf).
           > [mysqld]  
           > datadir=/mnt/md1/mysql  
           > socket=/mnt/md1/mysql/mysql.sock  
           > [client]  
           > socket=/mnt/md1/mysql/mysql.sock  
             - No other configuring required.
+
+          or
+              
+      - Initialize the MySQL 8.0(internal version:8.0.21)
+        - Configure the MySQL Configuration file (/etc/my.cnf.d/mysql-server.cnf).
+          > [mysqld] 
+          > datadir=/mnt/md1/mysql
+
+          > socket=/mnt/md1/mysql/mysql.sock 
+          
+        - Configure the MySQL Client Configuration file (/etc/my.cnf.d/client.cnf).
+          > [client]
+
+          > port=3306
+          
+          > socket=/mnt/md1/mysql/mysql.sock 
+            - No other configuring required.        
      
-3. MySQL Setup (Node1)
-    - Create the database directory.
-        - mkdir -p /mnt/md1/mysql
-    
+5. MySQL Setup (Node1)
+        
     - Run the MySQL service.
         - systemctl start mysqld
-
-    - Configure the root account
-        - mysql_secure_installation
 
     - Create database 
          - mysql -u root -p
@@ -134,7 +171,8 @@ procedure
     - Stop MySQL service
              - systemctl stop mysqld
 
-4.   MySQL Setup (Node2)
+6. MySQL Setup (Node2)
+
     You have to move failover group on the Node2. Configure MySQL on the Node2.
     - Start MySQL service.
         - systemctl start mysqld
@@ -158,12 +196,15 @@ procedure
     - Stop MySQL service.
          - systemctl stop mysqld
             
- 5. Configure the EXPRESSCLUSTER
-      - Add the exec resource and configure.  
+ 7. Configure the EXPRESSCLUSTER
+ 
+      - Add the exec resource and configure. 
+       
         In Config mode of the Cluster WebUI, Add the exec resource to control MySQL.  
-          - Configure the start.bat and stop.bat
-            -  In the case of start.bat -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl start mysqld"
-            -  In the case of stop.bat  -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl stop mysqld"
+          - Configure the start.sh and stop.sh
+            -  In the case of start.sh -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl start mysqld"
+            -  In the case of stop.sh  -> Immediately after "$CLP_DISK" = "SUCCESS", add the "systemctl stop mysqld"
+           
       - Add the MySQL monitor resource
           - Configure the folloing parameters
 
@@ -178,5 +219,6 @@ procedure
       - In Config mode of the Cluster WebUI, execute Apply the Configuration File.
       
 
-6. Verification
+8. Verification
+
     - Confirm that we can access the database where it failover group is running.
