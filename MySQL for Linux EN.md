@@ -97,6 +97,7 @@ Procedure
     
       - systemctl status mysqld
       - systemctl stop mysqld
+      - systemctl disable mysqld
       - sudo rsync -av /var/lib/mysql /mnt/md1/mysql
       
 4. Perform the below steps on both the Nodes.
