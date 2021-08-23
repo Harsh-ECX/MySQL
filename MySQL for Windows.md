@@ -105,8 +105,18 @@ Procedure
         - From services.msc start the MySQL Service.
         - From services.msc stop the MySQL Service.
 
+6. Change the startup type of MySQL Service (Node1 & Node2)
 
-6. Configure the MySQL Service in Cluster
+    - Open the Windows Service Manager
+
+      On Command Prompt
+      ```
+      > services.msc
+      ```
+
+    - Change the startup type of MySQL Service to Manual.
+
+7. Configure the MySQL Service in Cluster
  
       - Add the service resource and configure. 
        
@@ -115,6 +125,6 @@ Procedure
       - In Config mode of the Cluster WebUI, execute Apply the Configuration File.
       
       
-7. Verification
+8. Verification
 
     - Confirm that we can access the database where it failover group is running.
