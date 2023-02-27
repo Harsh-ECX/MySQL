@@ -48,7 +48,7 @@ Procedure
     - We assume the following 2node cluster and explain it.
 
     ### cluster information
-    ||Node1(Active)|Node2(Stanby)|
+    ||Node1(Active)|Node2(Standby)|
     |---|---|---|
     |Server name|Server1|Server2|
     |IPaddress|10.0.7.172|10.0.7.173|  
