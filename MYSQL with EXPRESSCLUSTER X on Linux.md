@@ -12,9 +12,10 @@ Configuration
 In this setup, create 2 nodes (Node1 and Node2 as below) mirror disk type cluster.
 Achieving MySQL high availability By using EXPRESSCLUSTER X. 
 
-### Software versions
-- MySQL 8.0(internal version:8.0.30) 
-             
+### OS & Software versions
+- REDHAT LINUX 8.6 (kernel 4.18.0-372.32.1.el8_6.x86_64)
+- MySQL 8.0(internal version:8.0.30)
+            
   OR
 
 - MySQL 8.0(internal version:8.0.30)
@@ -50,7 +51,7 @@ Procedure
     ### cluster information
     ||Node1(Active)|Node2(Stanby)|
     |---|---|---|
-    |Server name|Server1|Server2|
+    |Server name|Node1|Node2|
     |IPaddress|10.0.7.172|10.0.7.173|  
     |cluster partition|/dev/sdc1|/dev/sdc1|
     |data partition|/dev/sdb1|/dev/sdb1|
@@ -59,7 +60,15 @@ Procedure
     |parameter|value|
     |---|---|
     |name|failover1|
-    |Startup Server| Server1 -> Server2 |
+    |Startup Server| Node1 -> Node2 |
+    |floating ip address|10.0.7.171|
+    |mirror disk resource (mount point))|/datadrive|
+    
+    ### failback group information  
+    |parameter|value|
+    |---|---|
+    |name|failover1|
+    |Startup Server| Node2 -> Node1 |
     |floating ip address|10.0.7.171|
     |mirror disk resource (mount point))|/datadrive|
     
@@ -106,6 +115,7 @@ Procedure
       - Initialize the MySQL 8.0(internal version:8.0.30)
         - Configure the MySQL Configuration file (/etc/my.cnf.d/mysql-server.cnf).
           > [mysqld] 
+          
           > datadir=/datadrive/mysql
 
           > socket=/datadrive/mysql/mysql.sock 
@@ -171,7 +181,7 @@ Procedure
          - mysql -u test_user -p
               - Log in to "test_user"
          - use db_test
-              - Specify 
+              - Specify using database
          - select * from user;
             - Confirm the database.
 
@@ -179,7 +189,7 @@ Procedure
               |---|---|
               |1|ram|
 
-         - Create Table (Node2)
+     - Create Table (Node2)
          - mysql -u test_user -p
             - Log in to test_user.
          - use db_test
@@ -195,6 +205,7 @@ Procedure
 
               |id|name|
               |---|---|
+              |1|ram|
               |2|krishna|
                        
               
@@ -208,7 +219,7 @@ Procedure
      - mysql -u test_user -p
               - Log in to "test_user"
          - use db_test
-              - Specify 
+              - Specify using database
          - select * from user;
             - Confirm the database.
 
